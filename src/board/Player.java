@@ -6,43 +6,46 @@ class Player {
     private int sticks;
 
     public Player(){
-
+        this.h = new Hand();
+        this.d = new Display();
+        this.score = 0;
+        this.sticks = 0;
     }
 
     public int getScore() {
-        return score;
+        return this.score;
     }
 
     public int getHandLimit() {
-        return handlimit;
+        return this.handlimit;
     }
 
     public int getStickNumber() {
-        return sticks;
+        return this.sticks;
     }
 
     public void addSticks(int num) {
-
+        this.sticks += num;
     }
 
     public void removeSticks(int num) {
-
+        this.sticks -= num;
     }
 
     public Hand getHand() {
-        return h;
+        return this.h;
     }
 
     public Display getDisplay() {
-        return d;
+        return this.d;
     }
 
     public void addCardtoHand(Card c) {
-
+        this.h.add(c);
     }
 
     public void addCardtoDisplay(Card c) {
-
+        this.d.add(c);
     }
 
 
@@ -63,6 +66,6 @@ class Player {
     }
 
     public boolean putPanDown() {
-        
+
     }
 }

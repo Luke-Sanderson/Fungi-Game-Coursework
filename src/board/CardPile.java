@@ -1,7 +1,13 @@
-class CardPile {
+package board;
+
+import java.util.Stack;
+import java.util.Collections;
+import cards.Card;
+
+public class CardPile {
     private Stack<Card> cPile;
 
-    public CardPile(){
+    public CardPile() {
         this.cPile = new Stack<Card>();
     }
 
@@ -22,6 +28,6 @@ class CardPile {
     }
 
     public boolean isEmpty(){
-        this.cPile.empty();
+        return this.cPile.empty();
     }
 }

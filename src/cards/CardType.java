@@ -1,4 +1,6 @@
-public enum {
+package cards;
+
+public enum CardType {
     NIGHTMUSHROOM,
     DAYMUSHROOM,
     CIDER,

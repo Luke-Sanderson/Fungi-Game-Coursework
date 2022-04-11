@@ -1,4 +1,9 @@
-class Player {
+package board;
+
+import java.util.ArrayList;
+import cards.*;
+
+public class Player {
     private Hand h;
     private Display d;
     private int score;
@@ -8,8 +13,10 @@ class Player {
     public Player(){
         this.h = new Hand();
         this.d = new Display();
+        this.addCardtoDisplay(new Pan());
         this.score = 0;
         this.sticks = 0;
+        this.handlimit = 8;
     }
 
     public int getScore() {
@@ -41,7 +48,13 @@ class Player {
     }
 
     public void addCardtoHand(Card c) {
-        this.h.add(c);
+        if (c.getType() == CardType.BASKET) {
+            this.handlimit += 2;
+            this.addCardtoDisplay(c);
+        }
+        else{
+            this.h.add(c);
+        }
     }
 
     public void addCardtoDisplay(Card c) {
@@ -50,22 +63,168 @@ class Player {
 
 
     public boolean takeCardFromTheForest(int i) {
+        if (i <= 0 || i > 8) {
+            return false;
+        }
 
+        Card card = Board.getForest().getElementAt(8 - i);
+
+        if (card.getType() == CardType.BASKET) {
+            this.addCardtoHand(card);
+            Board.getForest().removeCardAt(8 - i);
+            return true;
+        }
+
+        if (this.getHand().size() >= this.getHandLimit()) {
+            return false;
+        }
+
+        if (i <= 2) {
+            this.addCardtoHand(card);
+            Board.getForest().removeCardAt(8 - i);
+            return true;
+        }
+        else if (this.getStickNumber() >= i - 2) {
+            this.removeSticks(i - 2);
+            this.addCardtoHand(card);
+            Board.getForest().removeCardAt(8 - i);
+            return true;
+        }
+
+
+        return false;
     }
 
     public boolean takeFromDecay() {
+        if (this.getHand().size() + Board.getDecayPile().size() <= this.getHandLimit()) {
+            while (Board.getDecayPile().size() > 0) {
+                this.addCardtoHand(Board.getDecayPile().get(0));
+                Board.getDecayPile().remove(0);
+            }
+            return true;
+        }
 
+        int numOfBaskets = 0;
+        for (Card c : Board.getDecayPile()) {
+            if (c.getType() == CardType.BASKET) {numOfBaskets += 1;}
+        }
+
+        if ((Board.getDecayPile().size() == 3 && numOfBaskets > 0) || (Board.getDecayPile().size() == 4 && numOfBaskets > 1)) {
+            while (Board.getDecayPile().size() > 0) {
+                this.addCardtoHand(Board.getDecayPile().get(0));
+                Board.getDecayPile().remove(0);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean cookMushrooms(ArrayList<Card> list) {
+        boolean panExists = false;
+        ArrayList<Card> mushrooms = new ArrayList<Card>();
+        ArrayList<Card> additionals = new ArrayList<Card>();
 
+        for (int i = 0; i < this.getDisplay().size(); i++) {
+            if (this.getDisplay().getElementAt(i).getType() == CardType.PAN) {
+                panExists = true;
+            }
+        }
+        for (Card c : list) {
+            switch (c.getType()) {
+                case PAN:
+                    panExists = true;
+                    break;
+                case DAYMUSHROOM:
+                    mushrooms.add(c);
+                    break;
+                case NIGHTMUSHROOM:
+                    mushrooms.add(c); mushrooms.add(c);
+                    break;
+                case BUTTER:
+                case CIDER:
+                    additionals.add(c);
+                    break;
+            }
+        }
+
+        if (!panExists || mushrooms.size() < 3) {
+            return false;
+        }
+
+        String name = mushrooms.get(0).getName();
+        for (Card c : mushrooms) {
+            if (c.getName() != name) return false;
+        }
+
+        int mushroomsRequired = 0;
+        for (Card additional : additionals) {
+            if (additional.getType() == CardType.BUTTER) {
+                mushroomsRequired += 4;
+            }
+            else {
+                mushroomsRequired += 5;
+            }
+        }
+
+        if (mushrooms.size() < mushroomsRequired) return false;
+
+        for (Card mushroom : mushrooms) {
+            this.score += ((EdibleItem) mushroom).getFlavourPoints();
+        }
+        for (Card additional : additionals) {
+            this.score += ((EdibleItem) additional).getFlavourPoints();
+        }
+
+        for (Card cardToRemove : list) {
+            for (int i = 0; i < this.getHand().size(); i++) {
+                if (cardToRemove == this.getHand().getElementAt(i)) {
+                    this.getHand().removeElement(i);
+                }
+            }
+        }
+
+        return true;
     }
 
-    public boolean sellMushooms(String name, int num) {
+    public boolean sellMushrooms(String name, int num) {
+        if (num < 1) return false;
 
+        name = name.toLowerCase().replaceAll("\\s", "");
+
+        int sticksToAdd = 0, numOfType = 0;
+
+        for (int i = 0; i < this.getHand().size(); i++) {
+            if (this.getHand().getElementAt(i).getName().equals(name))
+            {
+                numOfType++;
+            }
+        }
+        if (numOfType < 2) return false;
+
+        for (int i = 0; i < this.getHand().size(); i++) {
+            if (num < 0) break;
+            if (this.getHand().getElementAt(i).getName().equals(name))
+            {
+                sticksToAdd += ((Mushroom) this.getHand().getElementAt(i)).getSticksPerMushroom();
+                this.getHand().removeElement(i);
+                num--;
+            }
+        }
+
+        this.addSticks(sticksToAdd);
+
+        return true;
     }
 
     public boolean putPanDown() {
+        for (int i = 0; i < this.getHand().size(); i++) {
+            if (this.getHand().getElementAt(i).getType() == CardType.PAN) {
+                this.getDisplay().add(this.getHand().removeElement(i));
+                return true;
+            }
+        }
 
+        return false;
     }
 }

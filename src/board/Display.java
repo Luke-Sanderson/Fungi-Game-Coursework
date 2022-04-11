@@ -1,7 +1,12 @@
-class Display implements Displayable {
-    private ArrayList<Card> displayList;
+package board;
 
-    public add(Card c){
+import java.util.ArrayList;
+import cards.Card;
+
+public class Display implements Displayable {
+    private ArrayList<Card> displayList = new ArrayList<Card>();
+
+    public void add(Card c) {
         this.displayList.add(c);
     }
 
@@ -10,10 +15,11 @@ class Display implements Displayable {
     }
 
     public Card getElementAt(int index) {
-        return this.displayList[index];
+        return this.displayList.get(index);
     }
 
-    public Card removeCardAt(int index) {
+    public Card removeElement(int index) {
+        Card removed = this.getElementAt(index);
         this.displayList.remove(index);
-    }
+        return removed;    }
 }

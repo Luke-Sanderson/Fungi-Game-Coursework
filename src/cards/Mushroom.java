@@ -14,17 +14,15 @@ public class Mushroom extends EdibleItem {
                 break;
             case "treeear":
             case "shiitake":
+            case "birchbolete":
+            case "chanterelle":
                 this.sticksPerMushroom = 2;
                 break;
-            case "birchbolete":
             case "porcini":
                 this.sticksPerMushroom = 3;
                 break;
-            case "chanterelle":
-                this.sticksPerMushroom = 4;
-                break;
             case "morel":
-                this.sticksPerMushroom = 6;
+                this.sticksPerMushroom = 4;
                 break;
         }
     }

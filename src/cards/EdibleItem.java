@@ -24,10 +24,11 @@ public class EdibleItem extends Card {
             case "chanterelle":
                 flavourPoints = 4;
                 break;
-            case "morel":
             case "cider":
                 flavourPoints = 5;
                 break;
+            case "morel":
+                flavourPoints = 6;
         }
     }
 

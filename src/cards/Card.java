@@ -1,6 +1,6 @@
 package cards;
 
-public class Card {
+public abstract class Card {
     protected CardType type;
     protected String cardName;
 

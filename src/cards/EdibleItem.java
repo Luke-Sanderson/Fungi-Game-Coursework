@@ -1,6 +1,6 @@
 package cards;
 
-public class EdibleItem extends Card {
+public abstract class EdibleItem extends Card {
     protected int flavourPoints;
 
     public EdibleItem(CardType type, String n) {

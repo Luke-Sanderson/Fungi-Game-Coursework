@@ -182,6 +182,7 @@ public class Player {
             for (int i = 0; i < this.getHand().size(); i++) {
                 if (cardToRemove == this.getHand().getElementAt(i)) {
                     this.getHand().removeElement(i);
+                    break;
                 }
             }
         }

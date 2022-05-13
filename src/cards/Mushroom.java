@@ -1,6 +1,6 @@
 package cards;
 
-public class Mushroom extends EdibleItem {
+public abstract class Mushroom extends EdibleItem {
     protected int sticksPerMushroom;
 
     public Mushroom(CardType type, String n) {
